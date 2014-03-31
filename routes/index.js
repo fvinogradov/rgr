@@ -3,6 +3,7 @@ var url = require('url');
 var http = require('http');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser();
+var cityx;
 
 function getPage(pageurl, callback) {
     var options = {
@@ -14,14 +15,18 @@ function getPage(pageurl, callback) {
     http.get(options, function(res) {
         res.on('data', function(data) {
             text += data;
-        }).on('end', function() {
-                callback(text);
-            });
+        });
+        res.on('end', function() {
+            getWeather(text, callback)
+        });
     });
-};
+}
 
-function getWeather(txt, callback){
-    parser.parseString(txt,{async:true} ,function (err, result){
+function getWeather(txt, res){
+    var p = {};
+    parser.parseString(txt ,
+
+        function (err, result){
         var fact = result.forecast.day[0];
         var tom = result.forecast.day[1];
 
@@ -55,10 +60,7 @@ function getWeather(txt, callback){
                 wind:tom.day_part[5].wind_speed[0]
             }
         };
-
-
-        console.log("11ikslgmlskfm");
-        callback('<b>Прогноз погоды:</b><br />'+city.country+', '+city.region+', '+city.name+'<br /><br /><b>Сегодня '+p.fact.date+':</b><br />Днем '+p.fact.day.temp+' С, '+p.fact.day.type+', скорость ветра '+p.fact.day.wind+' м/с<br />Ночью '+p.fact.night.temp+' С, '+p.fact.night.type+', скорость ветра '+p.fact.night.wind+' м/с.<br />Восход в '+p.fact.sunrise+', заход в '+p.fact.sunset+'<br /><br /><b>Завтра '+p.tomorrow.date+':</b><br />Днем '+p.tomorrow.day.temp+' С, '+p.tomorrow.day.type+', скорость ветра '+p.tomorrow.day.wind+' м/с<br />Ночью '+p.tomorrow.night.temp+' С, '+p.tomorrow.night.type+', скорость ветра '+p.tomorrow.night.wind+' м/с.<br />Восход в '+p.tomorrow.sunrise+', заход в '+p.tomorrow.sunset);
+        res.json('<b>Прогноз погоды:</b><br />'+cityx.$.country+', '+cityx.$.region+', '+cityx._+'<br /><br /><b>Сегодня '+p.fact.date+':</b><br />Днем '+p.fact.day.temp+' С, '+p.fact.day.type+', скорость ветра '+p.fact.day.wind+' м/с<br />Ночью '+p.fact.night.temp+' С, '+p.fact.night.type+', скорость ветра '+p.fact.night.wind+' м/с.<br />Восход в '+p.fact.sunrise+', заход в '+p.fact.sunset+'<br /><br /><b>Завтра '+p.tomorrow.date+':</b><br />Днем '+p.tomorrow.day.temp+' С, '+p.tomorrow.day.type+', скорость ветра '+p.tomorrow.day.wind+' м/с<br />Ночью '+p.tomorrow.night.temp+' С, '+p.tomorrow.night.type+', скорость ветра '+p.tomorrow.night.wind+' м/с.<br />Восход в '+p.tomorrow.sunrise+', заход в '+p.tomorrow.sunset);
 
     });
 }
@@ -70,12 +72,13 @@ function parseXml(quer, callback) {
             for(var stran in result.cities.country){
                 for(var gor in result.cities.country[stran].city){
                     city = result.cities.country[stran].city[gor];
-                    if(city._.toLowerCase() == quer){
+                    if(city._.toLowerCase() == quer.toLowerCase()){
+                        cityx = city;
                         callback({name:city._, region:city.$.part, country:city.$.country, id:city.$.id});
                     };
                 }
             }
-            if(i==0) console.log('Не найдено');
+            //if(i==0) console.log('Не найдено');
         });
     });
 }
@@ -83,15 +86,8 @@ var prognoz = '';
 //var quer = 'абакан';
 
 exports.index = function(req, res){
-    parseXml(req.param('quer'), function(city){
-        var p = {};
-        var txt = getPage('http://export.yandex.ru/weather-ng/forecasts/' + city.id + '.xml');
-        getWeather(txt);
-        console.log("ikslgmlskfm");
-        prognoz = '<b>Прогноз погоды:</b><br />'+city.country+', '+city.region+', '+city.name+'<br /><br /><b>Сегодня '+p.fact.date+':</b><br />Днем '+p.fact.day.temp+' С, '+p.fact.day.type+', скорость ветра '+p.fact.day.wind+' м/с<br />Ночью '+p.fact.night.temp+' С, '+p.fact.night.type+', скорость ветра '+p.fact.night.wind+' м/с.<br />Восход в '+p.fact.sunrise+', заход в '+p.fact.sunset+'<br /><br /><b>Завтра '+p.tomorrow.date+':</b><br />Днем '+p.tomorrow.day.temp+' С, '+p.tomorrow.day.type+', скорость ветра '+p.tomorrow.day.wind+' м/с<br />Ночью '+p.tomorrow.night.temp+' С, '+p.tomorrow.night.type+', скорость ветра '+p.tomorrow.night.wind+' м/с.<br />Восход в '+p.tomorrow.sunrise+', заход в '+p.tomorrow.sunset;
+    parseXml(
+        req.param('query'), function(city){
+        var txt = getPage('http://export.yandex.ru/weather-ng/forecasts/' + city.id + '.xml', res);
     });
-//    console.log(city);
-
-//    getPage('http://export.yandex.ru/weather-ng/forecasts/'+city.id+'.xml', function(txt){console.log(txt)});
-    res.json(prognoz);
 };
