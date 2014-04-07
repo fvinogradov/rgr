@@ -91,3 +91,38 @@ exports.index = function(req, res){
         var txt = getPage('http://export.yandex.ru/weather-ng/forecasts/' + city.id + '.xml', res);
     });
 };
+
+exports.getCountries = function(req,res){
+    var countries = [];
+    fs.readFile('cities.xml',{encoding:'utf-8'}, function(err, data) {
+        parser.parseString(data, function (err, result) {
+            for(var i = 0, length = result.cities.country.length;i<length;i++){
+                countries.push(result.cities.country[i].$.name);
+            }
+//            for(var stran in result.cities.country){
+//                countries.push(stran.name);
+//            }
+//            console.log(countries);
+            res.json(countries);
+                        //if(i==0) console.log('Не найдено');
+        });
+    });
+}
+
+exports.getCitiesByCountry = function(req, res){
+    var resCities = [];
+    var country = req.param('strana');
+    fs.readFile('cities.xml',{encoding:'utf-8'}, function(err, data) {
+        parser.parseString(data, function (err, result) {
+            for(var i = 0, length = result.cities.country.length;i<length;i++) {
+                if ( result.cities.country[i].$.name.toString().toLowerCase() == country.toString().toLowerCase()) {
+                    for(var j = 0, newLength = result.cities.country[i].city.length;j<newLength;i++) {
+                        console.log(result.cities.country[i].city[j]._)
+                        resCities.push(result.cities.country[i].city[j]._);
+                    }
+                }
+            }
+            res.json(resCities);
+        });
+    });
+}
