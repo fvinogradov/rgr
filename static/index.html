@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>RGR</title>
+    <script src="jquery.js"></script>
+</head>
+<body>
+
+    <script>
+        $( document ).ready(function() {
+            console.log( "ready!" );
+            loadStrana();
+            $('#strana')
+        });
+
+        function loadStrana() {
+            $.ajax({
+                url: "http://localhost:3000/strana",
+                data: function(data) {
+                    console.log(data)
+                },
+                success: function(success) {
+                    for(index = 0; index < success.length; index++) {
+                        $('#strana')
+                                .append($("<option></option>")
+                                        .attr("value",success[index])
+                                        .text(success[index]));
+                    }
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        }
+
+        function loadCity() {
+            var strana = $("#strana").val();
+
+            $.get('http://localhost:3000/city', { strana: strana }, function(data) {
+                console.log(data);
+            });
+        }
+    </script>
+
+    <div >
+        <select id="strana" onchange="loadCity()"></select>
+
+        <select id="city"></select>
+    </div>
+</body>
+</html>

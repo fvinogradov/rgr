@@ -78,7 +78,6 @@ function parseXml(quer, callback) {
                     };
                 }
             }
-            //if(i==0) console.log('Не найдено');
         });
     });
 }
@@ -117,7 +116,7 @@ exports.getCitiesByCountry = function(req, res){
             for(var i = 0, length = result.cities.country.length;i<length;i++) {
                 if ( result.cities.country[i].$.name.toString().toLowerCase() == country.toString().toLowerCase()) {
                     for(var j = 0, newLength = result.cities.country[i].city.length;j<newLength;i++) {
-                        console.log(result.cities.country[i].city[j]._)
+                        console.log(result.cities.country[i])
                         resCities.push(result.cities.country[i].city[j]._);
                     }
                 }
