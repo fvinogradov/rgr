@@ -1,3 +1,4 @@
+// Объявление глобальных переменных
 var fs = require('fs');
 var url = require('url');
 var http = require('http');
@@ -5,6 +6,7 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser();
 var cityx;
 
+//Фунция загрузки страницы
 function getPage(pageurl, callback) {
     var options = {
         host: url.parse(pageurl).host,
@@ -17,11 +19,13 @@ function getPage(pageurl, callback) {
             text += data;
         });
         res.on('end', function() {
+//          Вызов функции обработки погоды по окончании запроса
             getWeather(text, callback)
         });
     });
 }
 
+//Фунция обработки загруженной погоды
 function getWeather(txt, res){
     var p = {};
     parser.parseString(txt ,
@@ -65,6 +69,7 @@ function getWeather(txt, res){
     });
 }
 
+//Поиск города в xml-файле.
 function parseXml(quer, callback) {
     fs.readFile('cities.xml',{encoding:'utf-8'}, function(err, data) {
         parser.parseString(data, function (err, result) {
@@ -90,6 +95,7 @@ exports.index = function(req, res){
     });
 };
 
+//Функция получения списка стран
 exports.getCountries = function(req,res){
     var countries = [];
     fs.readFile('cities.xml',{encoding:'utf-8'}, function(err, data) {
@@ -102,6 +108,7 @@ exports.getCountries = function(req,res){
     });
 }
 
+//Функция получения списка городов по стране
 exports.getCitiesByCountry = function(req, res){
     var resCities = [];
     var country = req.param('strana');
@@ -110,7 +117,7 @@ exports.getCitiesByCountry = function(req, res){
             for(var i = 0, length = result.cities.country.length;i<length;i++) {
                 if ( result.cities.country[i].$.name.toString().toLowerCase() == country.toString().toLowerCase()) {
                     for(var j = 0, newLength = result.cities.country[i].city.length;j<newLength;j++) {
-                        console.log(result.cities.country[i])
+//                        console.log(result.cities.country[i])
                         resCities.push(result.cities.country[i].city[j]._);
                     }
                 }

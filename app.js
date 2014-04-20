@@ -35,6 +35,7 @@ app.get('/strana', routes.getCountries);
 app.get('/city', routes.getCitiesByCountry);
 app.get('/users', user.list);
 
+//Создание http-сервера для обработки запросов
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
