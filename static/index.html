@@ -36,7 +36,8 @@
 
         function loadCity() {
             var strana = $("#strana").val();
-
+            $('#city')
+                    .empty()
             $.get('http://localhost:3000/city', { strana: strana }, function(data) {
                 for(index = 0; index < data.length; index++) {
                     $('#city')

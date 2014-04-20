@@ -82,7 +82,6 @@ function parseXml(quer, callback) {
     });
 }
 var prognoz = '';
-//var quer = 'абакан';
 
 exports.index = function(req, res){
     parseXml(
@@ -98,12 +97,7 @@ exports.getCountries = function(req,res){
             for(var i = 0, length = result.cities.country.length;i<length;i++){
                 countries.push(result.cities.country[i].$.name);
             }
-//            for(var stran in result.cities.country){
-//                countries.push(stran.name);
-//            }
-//            console.log(countries);
             res.json(countries);
-                        //if(i==0) console.log('Не найдено');
         });
     });
 }
