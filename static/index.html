@@ -36,8 +36,7 @@
 
         function loadCity() {
             var strana = $("#strana").val();
-            $('#city')
-                    .empty()
+            $('#city').empty()
             $.get('http://localhost:3000/city', { strana: strana }, function(data) {
                 for(index = 0; index < data.length; index++) {
                     $('#city')
@@ -47,12 +46,27 @@
                 }
              });
         }
+
+        function weather() {
+            var city = $('#city').val();
+
+            $.get('http://localhost:3000/', { query: city }, function(data) {
+                $('#weather').append(data);
+            });
+
+        }
     </script>
 
     <div >
         <select id="strana" onchange="loadCity()"></select>
 
-        <select id="city"></select>
+        <select id="city" onchange="weather()"></select>
+
+        </br>
+
+        <div id="weather">
+
+        </div>
     </div>
 </body>
 </html>
