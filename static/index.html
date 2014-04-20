@@ -38,8 +38,13 @@
             var strana = $("#strana").val();
 
             $.get('http://localhost:3000/city', { strana: strana }, function(data) {
-                console.log(data);
-            });
+                for(index = 0; index < data.length; index++) {
+                    $('#city')
+                            .append($("<option></option>")
+                                    .attr("value",data[index])
+                                    .text(data[index]));
+                }
+             });
         }
     </script>
 

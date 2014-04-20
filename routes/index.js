@@ -115,7 +115,7 @@ exports.getCitiesByCountry = function(req, res){
         parser.parseString(data, function (err, result) {
             for(var i = 0, length = result.cities.country.length;i<length;i++) {
                 if ( result.cities.country[i].$.name.toString().toLowerCase() == country.toString().toLowerCase()) {
-                    for(var j = 0, newLength = result.cities.country[i].city.length;j<newLength;i++) {
+                    for(var j = 0, newLength = result.cities.country[i].city.length;j<newLength;j++) {
                         console.log(result.cities.country[i])
                         resCities.push(result.cities.country[i].city[j]._);
                     }
