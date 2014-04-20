@@ -10,11 +10,15 @@
     <script>
         $( document ).ready(function() {
             console.log( "ready!" );
+            $('#strana').append("<option></option>");
+
             loadStrana();
-            $('#strana')
+
+
         });
 
         function loadStrana() {
+
             $.ajax({
                 url: "http://localhost:3000/strana",
                 data: function(data) {
@@ -38,6 +42,7 @@
             var strana = $("#strana").val();
             $('#city').empty()
             $.get('http://localhost:3000/city', { strana: strana }, function(data) {
+                $('#city').append("<option></option>");
                 for(index = 0; index < data.length; index++) {
                     $('#city')
                             .append($("<option></option>")
@@ -49,7 +54,7 @@
 
         function weather() {
             var city = $('#city').val();
-
+            $('#weather').empty();
             $.get('http://localhost:3000/', { query: city }, function(data) {
                 $('#weather').append(data);
             });
